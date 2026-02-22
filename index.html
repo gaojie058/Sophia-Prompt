@@ -1,361 +1,240 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sophia's Prompt Collection</title>
-    <style>
-        @keyframes gradientShift {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-        @keyframes fadeUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-6px); }
-        }
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        html { scroll-behavior: smooth; }
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, sans-serif;
-            background: #09090f;
-            color: #c4c4cc;
-            min-height: 100vh;
-            overflow-x: hidden;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sophia's Prompt Collection</title>
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg-primary:#0a0a0f;
+  --bg-secondary:#111118;
+  --bg-tertiary:#18181f;
+  --bg-card:#14141c;
+  --border:#1e1e2a;
+  --border-hover:#2a2a3a;
+  --text-primary:#e8e8ed;
+  --text-secondary:#8b8b9e;
+  --text-tertiary:#5a5a6e;
+  --accent:#8b5cf6;
+  --accent-dim:#7c3aed;
+  --accent-subtle:rgba(139,92,246,0.08);
+  --accent-glow:rgba(139,92,246,0.15);
+  --radius:12px;
+  --radius-lg:16px;
+}
+html{scroll-behavior:smooth;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Oxygen,Ubuntu,Cantarell,sans-serif;
+  background:var(--bg-primary);
+  color:var(--text-primary);
+  line-height:1.6;
+  min-height:100vh;
+  overflow-x:hidden;
+}
+::selection{background:var(--accent-glow);color:#fff}
 
-        /* ═══ Hamburger ═══ */
-        .menu-btn {
-            position: fixed; top: 20px; left: 20px; z-index: 1100;
-            width: 42px; height: 42px;
-            background: rgba(255,255,255,0.04);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(255,255,255,0.06);
-            border-radius: 11px;
-            cursor: pointer;
-            display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px;
-            transition: all 0.25s cubic-bezier(.4,0,.2,1);
-        }
-        .menu-btn:hover { background: rgba(139,92,246,0.12); border-color: rgba(139,92,246,0.25); }
-        .menu-btn span {
-            display: block; width: 18px; height: 1.5px;
-            background: #a1a1aa; border-radius: 1px;
-            transition: all 0.3s cubic-bezier(.4,0,.2,1);
-            transform-origin: center;
-        }
-        .menu-btn.open span:nth-child(1) { transform: rotate(45deg) translate(4.5px, 4.5px); }
-        .menu-btn.open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
-        .menu-btn.open span:nth-child(3) { transform: rotate(-45deg) translate(4.5px, -4.5px); }
+/* Sidebar */
+.sidebar-overlay{
+  position:fixed;inset:0;background:rgba(0,0,0,0.5);
+  backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);
+  opacity:0;visibility:hidden;transition:all .3s ease;z-index:100;
+}
+.sidebar-overlay.active{opacity:1;visibility:visible}
+.sidebar{
+  position:fixed;top:0;left:0;bottom:0;width:280px;
+  background:var(--bg-secondary);border-right:1px solid var(--border);
+  transform:translateX(-100%);transition:transform .3s cubic-bezier(.4,0,.2,1);
+  z-index:101;padding:clamp(1.5rem,4vw,2.5rem);
+  display:flex;flex-direction:column;
+}
+.sidebar.active{transform:translateX(0)}
+.sidebar-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:2rem}
+.sidebar-title{font-size:.8rem;text-transform:uppercase;letter-spacing:.12em;color:var(--text-tertiary);font-weight:600}
+.sidebar-close{
+  background:none;border:none;color:var(--text-secondary);font-size:1.2rem;
+  cursor:pointer;padding:4px 8px;border-radius:6px;transition:all .2s;
+}
+.sidebar-close:hover{background:var(--bg-tertiary);color:var(--text-primary)}
+.sidebar-nav{display:flex;flex-direction:column;gap:2px}
+.sidebar-link{
+  display:flex;align-items:center;gap:12px;padding:10px 14px;
+  border-radius:8px;color:var(--text-secondary);text-decoration:none;
+  font-size:.9rem;font-weight:500;transition:all .2s;
+}
+.sidebar-link:hover{background:var(--accent-subtle);color:var(--text-primary)}
+.sidebar-link span{font-size:1.1rem;width:24px;text-align:center}
+.sidebar-footer{margin-top:auto;padding-top:1.5rem;border-top:1px solid var(--border)}
+.sidebar-footer a{color:var(--text-tertiary);text-decoration:none;font-size:.8rem;transition:color .2s}
+.sidebar-footer a:hover{color:var(--accent)}
 
-        /* ═══ Overlay ═══ */
-        .overlay {
-            position: fixed; inset: 0; z-index: 1000;
-            background: rgba(0,0,0,0.6);
-            backdrop-filter: blur(4px);
-            opacity: 0; pointer-events: none;
-            transition: opacity 0.3s;
-        }
-        .overlay.show { opacity: 1; pointer-events: auto; }
+/* Hamburger */
+.hamburger{
+  position:fixed;top:clamp(1rem,3vw,1.5rem);left:clamp(1rem,3vw,1.5rem);
+  z-index:99;background:var(--bg-secondary);border:1px solid var(--border);
+  color:var(--text-secondary);font-size:1.2rem;width:42px;height:42px;
+  border-radius:10px;cursor:pointer;display:flex;align-items:center;justify-content:center;
+  transition:all .2s;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+}
+.hamburger:hover{border-color:var(--border-hover);color:var(--text-primary);background:var(--bg-tertiary)}
 
-        /* ═══ Sidebar ═══ */
-        .sidebar {
-            position: fixed; top: 0; left: 0; z-index: 1050;
-            width: 272px; height: 100dvh;
-            background: #111118;
-            border-right: 1px solid rgba(255,255,255,0.05);
-            transform: translateX(-100%);
-            transition: transform 0.35s cubic-bezier(.4,0,.2,1);
-            padding: 80px 14px 28px;
-            overflow-y: auto;
-        }
-        .sidebar.show { transform: translateX(0); }
-        .sidebar-label {
-            font-size: 0.65rem; font-weight: 600;
-            text-transform: uppercase; letter-spacing: 2px;
-            color: #52525b; padding: 0 12px; margin-bottom: 10px;
-        }
-        .sidebar a {
-            display: flex; align-items: center; gap: 12px;
-            padding: 11px 14px; border-radius: 9px;
-            color: #a1a1aa; text-decoration: none;
-            font-size: 0.88rem; font-weight: 450;
-            transition: all 0.15s;
-        }
-        .sidebar a:hover { background: rgba(139,92,246,0.08); color: #e4e4e7; }
-        .sidebar a .icon { width: 26px; text-align: center; font-size: 1.1rem; }
-        .sidebar a .badge {
-            margin-left: auto; font-size: 0.65rem;
-            color: #52525b; background: rgba(255,255,255,0.04);
-            padding: 2px 8px; border-radius: 6px;
-        }
+/* Main */
+main{max-width:880px;margin:0 auto;padding:clamp(1.5rem,5vw,3rem) clamp(1rem,4vw,2rem)}
 
-        /* ═══ Hero ═══ */
-        .hero {
-            position: relative;
-            padding: 100px 24px 70px;
-            text-align: center;
-            overflow: hidden;
-        }
-        .hero::before {
-            content: '';
-            position: absolute; top: -40%; left: -20%; right: -20%; bottom: 0;
-            background: radial-gradient(ellipse at 50% 0%, rgba(139,92,246,0.12) 0%, rgba(168,85,247,0.04) 40%, transparent 70%);
-            pointer-events: none;
-        }
-        .hero::after {
-            content: '';
-            position: absolute; bottom: 0; left: 0; right: 0; height: 1px;
-            background: linear-gradient(90deg, transparent, rgba(139,92,246,0.2), transparent);
-        }
-        .hero-content { position: relative; z-index: 1; }
-        .hero h1 {
-            font-size: clamp(2rem, 5vw, 3.2rem);
-            font-weight: 750; letter-spacing: -0.03em;
-            line-height: 1.1;
-            background: linear-gradient(135deg, #e4e4e7 0%, #a78bfa 50%, #c084fc 100%);
-            background-size: 200% 200%;
-            animation: gradientShift 6s ease infinite;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            margin-bottom: 14px;
-            animation: fadeUp 0.8s ease-out, gradientShift 6s ease infinite;
-        }
-        .hero p {
-            color: #71717a; font-size: 1.05rem;
-            max-width: 440px; margin: 0 auto;
-            animation: fadeUp 0.8s ease-out 0.15s both;
-        }
+/* Hero */
+.hero{
+  text-align:center;
+  padding:clamp(4rem,12vw,8rem) 0 clamp(2.5rem,6vw,4rem);
+}
+.hero-badge{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:6px 14px;border-radius:100px;
+  background:var(--accent-subtle);border:1px solid rgba(139,92,246,0.12);
+  font-size:.75rem;font-weight:600;color:var(--accent);
+  letter-spacing:.04em;text-transform:uppercase;margin-bottom:1.5rem;
+}
+.hero-badge .dot{
+  width:6px;height:6px;border-radius:50%;background:var(--accent);
+  animation:pulse 2.5s ease-in-out infinite;
+}
+@keyframes pulse{0%,100%{opacity:.4;transform:scale(1)}50%{opacity:1;transform:scale(1.2)}}
+.hero h1{
+  font-size:clamp(2rem,5.5vw,3.5rem);
+  font-weight:700;letter-spacing:-.03em;line-height:1.1;
+  color:var(--text-primary);margin-bottom:.75rem;
+}
+.hero h1 em{
+  font-style:normal;
+  background:linear-gradient(135deg,var(--accent),#a78bfa);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;
+}
+.hero p{
+  font-size:clamp(.95rem,2vw,1.1rem);
+  color:var(--text-secondary);max-width:440px;margin:0 auto;
+  line-height:1.7;font-weight:400;
+}
 
-        /* ═══ Main ═══ */
-        .main {
-            max-width: 880px;
-            margin: 0 auto;
-            padding: 0 24px 60px;
-        }
+/* Search */
+.search-wrap{
+  max-width:480px;margin:0 auto clamp(2.5rem,6vw,4rem);position:relative;
+}
+.search-icon{
+  position:absolute;left:16px;top:50%;transform:translateY(-50%);
+  color:var(--text-tertiary);font-size:.9rem;pointer-events:none;
+}
+.search-input{
+  width:100%;padding:13px 16px 13px 44px;
+  background:var(--bg-secondary);border:1px solid var(--border);
+  border-radius:var(--radius);color:var(--text-primary);
+  font-size:.9rem;font-family:inherit;outline:none;transition:all .2s;
+}
+.search-input::placeholder{color:var(--text-tertiary)}
+.search-input:focus{border-color:var(--accent-dim);box-shadow:0 0 0 3px var(--accent-subtle)}
 
-        /* ═══ Search ═══ */
-        .search-wrap {
-            position: relative;
-            margin-bottom: 36px;
-            animation: fadeUp 0.8s ease-out 0.3s both;
-        }
-        .search-wrap svg {
-            position: absolute; left: 16px; top: 50%; transform: translateY(-50%);
-            width: 16px; height: 16px; color: #52525b;
-        }
-        .search {
-            width: 100%;
-            padding: 13px 16px 13px 44px;
-            background: rgba(255,255,255,0.03);
-            border: 1px solid rgba(255,255,255,0.06);
-            border-radius: 11px;
-            color: #e4e4e7; font-size: 0.92rem;
-            outline: none;
-            transition: all 0.2s;
-        }
-        .search::placeholder { color: #3f3f46; }
-        .search:focus {
-            border-color: rgba(139,92,246,0.35);
-            background: rgba(139,92,246,0.04);
-            box-shadow: 0 0 0 3px rgba(139,92,246,0.06);
-        }
+/* Grid */
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(min(100%,250px),1fr));
+  gap:clamp(.75rem,2vw,1rem);
+  margin-bottom:clamp(3rem,8vw,5rem);
+}
+.card{
+  background:var(--bg-card);border:1px solid var(--border);
+  border-radius:var(--radius-lg);padding:clamp(1.25rem,3vw,1.75rem);
+  text-decoration:none;color:inherit;
+  transition:all .25s cubic-bezier(.4,0,.2,1);
+  position:relative;overflow:hidden;display:flex;flex-direction:column;gap:12px;
+}
+.card::before{
+  content:'';position:absolute;inset:0;border-radius:inherit;
+  background:linear-gradient(135deg,var(--accent-subtle),transparent);
+  opacity:0;transition:opacity .25s;
+}
+.card:hover{
+  border-color:var(--border-hover);
+  transform:translateY(-2px);
+  box-shadow:0 8px 32px rgba(0,0,0,0.3);
+}
+.card:hover::before{opacity:1}
+.card-emoji{font-size:1.75rem;position:relative;z-index:1}
+.card-name{font-size:1rem;font-weight:600;position:relative;z-index:1;letter-spacing:-.01em}
+.card-count{font-size:.78rem;color:var(--text-tertiary);position:relative;z-index:1;font-weight:500}
 
-        /* ═══ Grid ═══ */
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            gap: 16px;
-        }
-        .card {
-            position: relative;
-            background: rgba(255,255,255,0.02);
-            border: 1px solid rgba(255,255,255,0.05);
-            border-radius: 14px;
-            padding: 26px 24px;
-            text-decoration: none; color: inherit;
-            transition: all 0.25s cubic-bezier(.4,0,.2,1);
-            animation: fadeUp 0.6s ease-out both;
-        }
-        .card:nth-child(1) { animation-delay: 0.35s; }
-        .card:nth-child(2) { animation-delay: 0.42s; }
-        .card:nth-child(3) { animation-delay: 0.49s; }
-        .card:nth-child(4) { animation-delay: 0.56s; }
-        .card:nth-child(5) { animation-delay: 0.63s; }
-        .card:nth-child(6) { animation-delay: 0.70s; }
-        .card:hover {
-            background: rgba(139,92,246,0.04);
-            border-color: rgba(139,92,246,0.18);
-            transform: translateY(-3px);
-            box-shadow: 0 8px 30px rgba(139,92,246,0.06);
-        }
-        .card-icon {
-            font-size: 1.6rem; margin-bottom: 14px;
-            display: inline-block;
-        }
-        .card:hover .card-icon { animation: float 2s ease-in-out infinite; }
-        .card h3 {
-            font-size: 1rem; font-weight: 600;
-            color: #e4e4e7; margin-bottom: 6px;
-            letter-spacing: -0.01em;
-        }
-        .card p {
-            font-size: 0.82rem; color: #71717a;
-            line-height: 1.55;
-        }
-        .card .tag {
-            display: inline-block; margin-top: 14px;
-            font-size: 0.68rem; font-weight: 500;
-            color: #7c3aed; background: rgba(139,92,246,0.08);
-            padding: 3px 10px; border-radius: 6px;
-        }
-
-        /* ═══ Footer ═══ */
-        .footer {
-            text-align: center;
-            padding: 40px 24px;
-            border-top: 1px solid rgba(255,255,255,0.04);
-        }
-        .footer p { color: #3f3f46; font-size: 0.8rem; }
-        .footer a {
-            color: #7c3aed; text-decoration: none;
-            transition: color 0.2s;
-        }
-        .footer a:hover { color: #a78bfa; }
-
-        /* ═══ Responsive ═══ */
-        @media (max-width: 640px) {
-            .hero { padding: 80px 20px 50px; }
-            .main { padding: 0 16px 40px; }
-            .grid { grid-template-columns: 1fr; gap: 12px; }
-            .sidebar { width: 260px; }
-        }
-    </style>
+/* Footer */
+footer{
+  text-align:center;padding:clamp(2rem,5vw,3rem) 0;
+  border-top:1px solid var(--border);
+  color:var(--text-tertiary);font-size:.82rem;
+  display:flex;flex-direction:column;gap:8px;align-items:center;
+}
+footer a{
+  color:var(--text-secondary);text-decoration:none;transition:color .2s;
+}
+footer a:hover{color:var(--accent)}
+</style>
 </head>
 <body>
 
-<!-- Hamburger -->
-<button class="menu-btn" id="menuBtn" aria-label="Menu">
-    <span></span><span></span><span></span>
-</button>
+<button class="hamburger" onclick="toggleSidebar()" aria-label="Menu">☰</button>
 
-<!-- Overlay -->
-<div class="overlay" id="overlay"></div>
-
-<!-- Sidebar -->
-<nav class="sidebar" id="sidebar">
-    <div class="sidebar-label">Categories</div>
-    <a href="prompts/research/">
-        <span class="icon">🔬</span> Research
-        <span class="badge">0</span>
-    </a>
-    <a href="prompts/coding/">
-        <span class="icon">💻</span> Coding
-        <span class="badge">0</span>
-    </a>
-    <a href="prompts/writing/">
-        <span class="icon">✍️</span> Writing
-        <span class="badge">0</span>
-    </a>
-    <a href="prompts/thinking/">
-        <span class="icon">🧠</span> Thinking
-        <span class="badge">0</span>
-    </a>
-    <a href="prompts/creative/">
-        <span class="icon">🎨</span> Creative
-        <span class="badge">0</span>
-    </a>
-    <a href="prompts/data/">
-        <span class="icon">📊</span> Data
-        <span class="badge">0</span>
-    </a>
+<div class="sidebar-overlay" onclick="toggleSidebar()"></div>
+<nav class="sidebar">
+  <div class="sidebar-header">
+    <span class="sidebar-title">Categories</span>
+    <button class="sidebar-close" onclick="toggleSidebar()">✕</button>
+  </div>
+  <div class="sidebar-nav">
+    <a href="prompts/research/" class="sidebar-link"><span>🔬</span>Research</a>
+    <a href="prompts/coding/" class="sidebar-link"><span>💻</span>Coding</a>
+    <a href="prompts/writing/" class="sidebar-link"><span>✍️</span>Writing</a>
+    <a href="prompts/thinking/" class="sidebar-link"><span>🧠</span>Thinking</a>
+    <a href="prompts/creative/" class="sidebar-link"><span>🎨</span>Creative</a>
+    <a href="prompts/data/" class="sidebar-link"><span>📊</span>Data</a>
+  </div>
+  <div class="sidebar-footer">
+    <a href="https://github.com/gaojie058/Sophia-Prompt">GitHub ↗</a>
+  </div>
 </nav>
 
-<!-- Hero -->
-<section class="hero">
-    <div class="hero-content">
-        <h1>Sophia's Prompt<br>Collection</h1>
-        <p>A curated library of prompts for research, coding, writing, and beyond.</p>
-    </div>
-</section>
+<main>
+  <section class="hero">
+    <div class="hero-badge"><span class="dot"></span>Prompt Library</div>
+    <h1>Sophia's <em>Prompt</em> Collection</h1>
+    <p>A curated library of prompts for research, coding, writing, and beyond.</p>
+  </section>
 
-<!-- Main -->
-<main class="main">
-    <div class="search-wrap">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"/>
-        </svg>
-        <input type="text" class="search" id="search" placeholder="Search prompts…">
-    </div>
+  <div class="search-wrap">
+    <span class="search-icon">⌕</span>
+    <input type="text" class="search-input" placeholder="Search prompts..." id="searchInput">
+  </div>
 
-    <div class="grid" id="grid">
-        <a class="card" href="prompts/research/">
-            <div class="card-icon">🔬</div>
-            <h3>Research</h3>
-            <p>Academic writing, literature review, paper analysis, methodology design</p>
-            <span class="tag">0 prompts</span>
-        </a>
-        <a class="card" href="prompts/coding/">
-            <div class="card-icon">💻</div>
-            <h3>Coding</h3>
-            <p>Programming assistance, debugging, code review, architecture</p>
-            <span class="tag">0 prompts</span>
-        </a>
-        <a class="card" href="prompts/writing/">
-            <div class="card-icon">✍️</div>
-            <h3>Writing</h3>
-            <p>Creative writing, editing, summarization, translation</p>
-            <span class="tag">0 prompts</span>
-        </a>
-        <a class="card" href="prompts/thinking/">
-            <div class="card-icon">🧠</div>
-            <h3>Thinking</h3>
-            <p>Problem solving, brainstorming, critical analysis, decision making</p>
-            <span class="tag">0 prompts</span>
-        </a>
-        <a class="card" href="prompts/creative/">
-            <div class="card-icon">🎨</div>
-            <h3>Creative</h3>
-            <p>Image generation, design concepts, visual prompts</p>
-            <span class="tag">0 prompts</span>
-        </a>
-        <a class="card" href="prompts/data/">
-            <div class="card-icon">📊</div>
-            <h3>Data</h3>
-            <p>Data analysis, visualization, statistics, machine learning</p>
-            <span class="tag">0 prompts</span>
-        </a>
-    </div>
+  <div class="grid" id="grid">
+    <a href="prompts/research/" class="card"><span class="card-emoji">🔬</span><span class="card-name">Research</span><span class="card-count">0 prompts</span></a>
+    <a href="prompts/coding/" class="card"><span class="card-emoji">💻</span><span class="card-name">Coding</span><span class="card-count">0 prompts</span></a>
+    <a href="prompts/writing/" class="card"><span class="card-emoji">✍️</span><span class="card-name">Writing</span><span class="card-count">0 prompts</span></a>
+    <a href="prompts/thinking/" class="card"><span class="card-emoji">🧠</span><span class="card-name">Thinking</span><span class="card-count">0 prompts</span></a>
+    <a href="prompts/creative/" class="card"><span class="card-emoji">🎨</span><span class="card-name">Creative</span><span class="card-count">0 prompts</span></a>
+    <a href="prompts/data/" class="card"><span class="card-emoji">📊</span><span class="card-name">Data</span><span class="card-count">0 prompts</span></a>
+  </div>
 </main>
 
-<footer class="footer">
-    <p>Built with 💜 by Sophia · <a href="https://github.com/gaojie058/Sophia-Prompt">GitHub</a></p>
+<footer>
+  <span>Built with 💜 by Sophia</span>
+  <a href="https://github.com/gaojie058/Sophia-Prompt">github.com/gaojie058/Sophia-Prompt</a>
 </footer>
 
 <script>
-    const btn = document.getElementById('menuBtn');
-    const sidebar = document.getElementById('sidebar');
-    const overlay = document.getElementById('overlay');
-
-    function toggle() {
-        btn.classList.toggle('open');
-        sidebar.classList.toggle('show');
-        overlay.classList.toggle('show');
-    }
-    btn.addEventListener('click', toggle);
-    overlay.addEventListener('click', toggle);
-
-    document.getElementById('search').addEventListener('input', e => {
-        const q = e.target.value.toLowerCase();
-        document.querySelectorAll('.card').forEach(c => {
-            c.style.display = c.textContent.toLowerCase().includes(q) ? '' : 'none';
-        });
-    });
+function toggleSidebar(){
+  document.querySelector('.sidebar').classList.toggle('active');
+  document.querySelector('.sidebar-overlay').classList.toggle('active');
+}
+document.getElementById('searchInput').addEventListener('input',function(e){
+  const q=e.target.value.toLowerCase();
+  document.querySelectorAll('.card').forEach(c=>{
+    c.style.display=c.textContent.toLowerCase().includes(q)?'':'none';
+  });
+});
 </script>
 </body>
 </html>
