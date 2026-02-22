@@ -4,237 +4,587 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Sophia's Prompt Collection</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><circle cx='16' cy='16' r='14' fill='%238b5cf6' opacity='.15'/><circle cx='16' cy='16' r='9' fill='none' stroke='%238b5cf6' stroke-width='1.5' opacity='.4'/><text x='16' y='21' text-anchor='middle' font-size='14'>✨</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
-*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
-:root{
-  --bg-primary:#0a0a0f;
-  --bg-secondary:#111118;
-  --bg-tertiary:#18181f;
-  --bg-card:#14141c;
-  --border:#1e1e2a;
-  --border-hover:#2a2a3a;
-  --text-primary:#e8e8ed;
-  --text-secondary:#8b8b9e;
-  --text-tertiary:#5a5a6e;
-  --accent:#8b5cf6;
-  --accent-dim:#7c3aed;
-  --accent-subtle:rgba(139,92,246,0.08);
-  --accent-glow:rgba(139,92,246,0.15);
-  --radius:12px;
-  --radius-lg:16px;
-}
-html{scroll-behavior:smooth;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
-body{
-  font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Oxygen,Ubuntu,Cantarell,sans-serif;
-  background:var(--bg-primary);
-  color:var(--text-primary);
-  line-height:1.6;
-  min-height:100vh;
-  overflow-x:hidden;
-}
-::selection{background:var(--accent-glow);color:#fff}
+  :root {
+    --bg: #ffffff;
+    --surface: #f8f9fa;
+    --surface-hover: #f0f1f3;
+    --border: #e0e0e6;
+    --text: #1a1a2e;
+    --text-dim: #555570;
+    --text-muted: #888899;
+    --accent: #8b5cf6;
+    --accent-light: rgba(139,92,246,0.08);
+    --accent-border: rgba(139,92,246,0.25);
+    --tag-bg: rgba(0,0,0,0.04);
+    --font-mono: 'IBM Plex Mono', monospace;
+    --font-sans: 'IBM Plex Sans', sans-serif;
 
-/* Sidebar */
-.sidebar-overlay{
-  position:fixed;inset:0;background:rgba(0,0,0,0.5);
-  backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);
-  opacity:0;visibility:hidden;transition:all .3s ease;z-index:100;
-}
-.sidebar-overlay.active{opacity:1;visibility:visible}
-.sidebar{
-  position:fixed;top:0;left:0;bottom:0;width:280px;
-  background:var(--bg-secondary);border-right:1px solid var(--border);
-  transform:translateX(-100%);transition:transform .3s cubic-bezier(.4,0,.2,1);
-  z-index:101;padding:clamp(1.5rem,4vw,2.5rem);
-  display:flex;flex-direction:column;
-}
-.sidebar.active{transform:translateX(0)}
-.sidebar-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:2rem}
-.sidebar-title{font-size:.8rem;text-transform:uppercase;letter-spacing:.12em;color:var(--text-tertiary);font-weight:600}
-.sidebar-close{
-  background:none;border:none;color:var(--text-secondary);font-size:1.2rem;
-  cursor:pointer;padding:4px 8px;border-radius:6px;transition:all .2s;
-}
-.sidebar-close:hover{background:var(--bg-tertiary);color:var(--text-primary)}
-.sidebar-nav{display:flex;flex-direction:column;gap:2px}
-.sidebar-link{
-  display:flex;align-items:center;gap:12px;padding:10px 14px;
-  border-radius:8px;color:var(--text-secondary);text-decoration:none;
-  font-size:.9rem;font-weight:500;transition:all .2s;
-}
-.sidebar-link:hover{background:var(--accent-subtle);color:var(--text-primary)}
-.sidebar-link span{font-size:1.1rem;width:24px;text-align:center}
-.sidebar-footer{margin-top:auto;padding-top:1.5rem;border-top:1px solid var(--border)}
-.sidebar-footer a{color:var(--text-tertiary);text-decoration:none;font-size:.8rem;transition:color .2s}
-.sidebar-footer a:hover{color:var(--accent)}
+    --cat-research: #8b5cf6;
+    --cat-coding: #2563eb;
+    --cat-writing: #d97706;
+    --cat-thinking: #059669;
+    --cat-creative: #e11d48;
+    --cat-data: #0891b2;
+  }
 
-/* Hamburger */
-.hamburger{
-  position:fixed;top:clamp(1rem,3vw,1.5rem);left:clamp(1rem,3vw,1.5rem);
-  z-index:99;background:var(--bg-secondary);border:1px solid var(--border);
-  color:var(--text-secondary);font-size:1.2rem;width:42px;height:42px;
-  border-radius:10px;cursor:pointer;display:flex;align-items:center;justify-content:center;
-  transition:all .2s;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
-}
-.hamburger:hover{border-color:var(--border-hover);color:var(--text-primary);background:var(--bg-tertiary)}
+  * { margin: 0; padding: 0; box-sizing: border-box; }
 
-/* Main */
-main{max-width:880px;margin:0 auto;padding:clamp(1.5rem,5vw,3rem) clamp(1rem,4vw,2rem)}
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-sans);
+    line-height: 1.6;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
 
-/* Hero */
-.hero{
-  text-align:center;
-  padding:clamp(4rem,12vw,8rem) 0 clamp(2.5rem,6vw,4rem);
-}
-.hero-badge{
-  display:inline-flex;align-items:center;gap:6px;
-  padding:6px 14px;border-radius:100px;
-  background:var(--accent-subtle);border:1px solid rgba(139,92,246,0.12);
-  font-size:.75rem;font-weight:600;color:var(--accent);
-  letter-spacing:.04em;text-transform:uppercase;margin-bottom:1.5rem;
-}
-.hero-badge .dot{
-  width:6px;height:6px;border-radius:50%;background:var(--accent);
-  animation:pulse 2.5s ease-in-out infinite;
-}
-@keyframes pulse{0%,100%{opacity:.4;transform:scale(1)}50%{opacity:1;transform:scale(1.2)}}
-.hero h1{
-  font-size:clamp(2rem,5.5vw,3.5rem);
-  font-weight:700;letter-spacing:-.03em;line-height:1.1;
-  color:var(--text-primary);margin-bottom:.75rem;
-}
-.hero h1 em{
-  font-style:normal;
-  background:linear-gradient(135deg,var(--accent),#a78bfa);
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
-  background-clip:text;
-}
-.hero p{
-  font-size:clamp(.95rem,2vw,1.1rem);
-  color:var(--text-secondary);max-width:440px;margin:0 auto;
-  line-height:1.7;font-weight:400;
-}
+  /* ─── Header ─── */
+  .header {
+    border-bottom: 1px solid var(--border);
+    padding: 1.5rem 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
 
-/* Search */
-.search-wrap{
-  max-width:480px;margin:0 auto clamp(2.5rem,6vw,4rem);position:relative;
-}
-.search-icon{
-  position:absolute;left:16px;top:50%;transform:translateY(-50%);
-  color:var(--text-tertiary);font-size:.9rem;pointer-events:none;
-}
-.search-input{
-  width:100%;padding:13px 16px 13px 44px;
-  background:var(--bg-secondary);border:1px solid var(--border);
-  border-radius:var(--radius);color:var(--text-primary);
-  font-size:.9rem;font-family:inherit;outline:none;transition:all .2s;
-}
-.search-input::placeholder{color:var(--text-tertiary)}
-.search-input:focus{border-color:var(--accent-dim);box-shadow:0 0 0 3px var(--accent-subtle)}
+  .header-left {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
 
-/* Grid */
-.grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(min(100%,250px),1fr));
-  gap:clamp(.75rem,2vw,1rem);
-  margin-bottom:clamp(3rem,8vw,5rem);
-}
-.card{
-  background:var(--bg-card);border:1px solid var(--border);
-  border-radius:var(--radius-lg);padding:clamp(1.25rem,3vw,1.75rem);
-  text-decoration:none;color:inherit;
-  transition:all .25s cubic-bezier(.4,0,.2,1);
-  position:relative;overflow:hidden;display:flex;flex-direction:column;gap:12px;
-}
-.card::before{
-  content:'';position:absolute;inset:0;border-radius:inherit;
-  background:linear-gradient(135deg,var(--accent-subtle),transparent);
-  opacity:0;transition:opacity .25s;
-}
-.card:hover{
-  border-color:var(--border-hover);
-  transform:translateY(-2px);
-  box-shadow:0 8px 32px rgba(0,0,0,0.3);
-}
-.card:hover::before{opacity:1}
-.card-emoji{font-size:1.75rem;position:relative;z-index:1}
-.card-name{font-size:1rem;font-weight:600;position:relative;z-index:1;letter-spacing:-.01em}
-.card-count{font-size:.78rem;color:var(--text-tertiary);position:relative;z-index:1;font-weight:500}
+  .logo {
+    font-family: var(--font-mono);
+    font-size: 1.1rem;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    color: var(--text);
+  }
 
-/* Footer */
-footer{
-  text-align:center;padding:clamp(2rem,5vw,3rem) 0;
-  border-top:1px solid var(--border);
-  color:var(--text-tertiary);font-size:.82rem;
-  display:flex;flex-direction:column;gap:8px;align-items:center;
-}
-footer a{
-  color:var(--text-secondary);text-decoration:none;transition:color .2s;
-}
-footer a:hover{color:var(--accent)}
+  .logo span { color: var(--accent); }
+
+  .meta-info {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    font-family: var(--font-mono);
+  }
+
+  .header-right {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+  }
+
+  .search-box {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 0.4rem 0.8rem;
+    color: var(--text);
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    width: 260px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .search-box:focus { border-color: var(--accent); }
+  .search-box::placeholder { color: var(--text-muted); }
+
+  .github-btn {
+    padding: 0.35rem 0.8rem;
+    background: var(--surface);
+    color: var(--text-dim);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    cursor: pointer;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    transition: all 0.15s;
+  }
+  .github-btn:hover { border-color: var(--text-muted); color: var(--text); }
+
+  /* ─── Layout ─── */
+  .main-layout {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  /* ─── Hamburger Tab ─── */
+  .tab-hamburger-wrap {
+    position: relative;
+    flex-shrink: 0;
+    width: 100%;
+    z-index: 100;
+  }
+
+  .tab-hamburger-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    width: 100%;
+    padding: 0.7rem 1rem;
+    font-size: 0.85rem;
+    font-family: var(--font-mono);
+    color: var(--text);
+    background: var(--surface);
+    border: none;
+    border-bottom: 1px solid var(--border);
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .tab-hamburger-btn:hover { background: var(--surface-hover); }
+
+  .hamburger-icon { font-size: 1.1rem; }
+  .hamburger-label { font-weight: 600; }
+  .hamburger-count {
+    background: var(--tag-bg);
+    padding: 0.1rem 0.5rem;
+    border-radius: 10px;
+    font-size: 0.7rem;
+    color: var(--text-dim);
+  }
+  .hamburger-arrow { margin-left: auto; color: var(--text-muted); font-size: 0.8rem; }
+
+  .tab-dropdown {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0; right: 0;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-top: none;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+    max-height: 70vh;
+    overflow-y: auto;
+    z-index: 101;
+  }
+  .tab-dropdown.open { display: flex; flex-direction: column; }
+
+  .tab {
+    padding: 0.6rem 1rem;
+    font-size: 0.8rem;
+    font-family: var(--font-mono);
+    color: var(--text-muted);
+    cursor: pointer;
+    border-left: 2px solid transparent;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: none;
+    border-top: none;
+    border-bottom: none;
+    border-right: none;
+    text-align: left;
+  }
+  .tab:hover { color: var(--text-dim); background: var(--surface-hover); }
+  .tab.active {
+    color: var(--text);
+    border-left-color: var(--accent);
+    background: var(--bg);
+  }
+  .tab .count {
+    background: var(--tag-bg);
+    padding: 0.1rem 0.45rem;
+    border-radius: 10px;
+    font-size: 0.65rem;
+    color: var(--text-dim);
+    margin-left: auto;
+  }
+  .source-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    display: inline-block;
+    flex-shrink: 0;
+  }
+
+  /* ─── Stats Bar ─── */
+  .stats-bar {
+    display: flex;
+    gap: 2rem;
+    padding: 1rem 2rem;
+    border-bottom: 1px solid var(--border);
+    flex-wrap: wrap;
+  }
+  .stat { display: flex; flex-direction: column; gap: 0.1rem; }
+  .stat-value {
+    font-family: var(--font-mono);
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: var(--text);
+  }
+  .stat-label {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  /* ─── Content ─── */
+  .content {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 0.75rem;
+    width: 100%;
+    padding: 1.5rem 2rem;
+    flex: 1;
+    overflow-y: auto;
+    align-content: start;
+  }
+
+  /* ─── Cards ─── */
+  .card {
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.4rem;
+    background: var(--surface);
+    transition: all 0.15s;
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+  .card:hover {
+    background: var(--surface-hover);
+    border-color: #c8c8d0;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+  }
+
+  .card-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.8rem;
+  }
+
+  .card-indicator {
+    width: 3px;
+    min-height: 2rem;
+    border-radius: 2px;
+    flex-shrink: 0;
+    margin-top: 0.15rem;
+  }
+
+  .card-icon {
+    font-size: 1.8rem;
+    line-height: 1;
+  }
+
+  .card-body { flex: 1; }
+
+  .card-title {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 0.3rem;
+  }
+
+  .card-desc {
+    font-size: 0.8rem;
+    color: var(--text-dim);
+    line-height: 1.5;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .card-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    align-items: center;
+  }
+
+  .tag {
+    font-size: 0.68rem;
+    font-family: var(--font-mono);
+    padding: 0.15rem 0.5rem;
+    border-radius: 4px;
+    background: var(--tag-bg);
+    color: var(--text-dim);
+  }
+
+  .tag-accent {
+    background: var(--accent-light);
+    color: var(--accent);
+  }
+
+  /* ─── Empty State ─── */
+  .empty-state {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 4rem 2rem;
+    color: var(--text-muted);
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+  }
+  .empty-state::before {
+    content: "∅";
+    display: block;
+    font-size: 2rem;
+    margin-bottom: 1rem;
+  }
+
+  /* ─── Footer ─── */
+  .footer {
+    border-top: 1px solid var(--border);
+    padding: 1.5rem 2rem;
+    text-align: center;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    font-family: var(--font-mono);
+  }
+  .footer a { color: var(--accent); text-decoration: none; }
+  .footer a:hover { text-decoration: underline; }
+
+  /* ─── Responsive ─── */
+  @media (max-width: 768px) {
+    .header { padding: 1rem; }
+    .search-box { width: 100%; }
+    .content { padding: 1rem; grid-template-columns: 1fr; }
+    .stats-bar { padding: 0.8rem 1rem; gap: 1.2rem; }
+  }
 </style>
 </head>
 <body>
 
-<button class="hamburger" onclick="toggleSidebar()" aria-label="Menu">☰</button>
-
-<div class="sidebar-overlay" onclick="toggleSidebar()"></div>
-<nav class="sidebar">
-  <div class="sidebar-header">
-    <span class="sidebar-title">Categories</span>
-    <button class="sidebar-close" onclick="toggleSidebar()">✕</button>
+<div class="header">
+  <div class="header-left">
+    <div class="logo">Sophia<span>Prompt</span></div>
+    <div class="meta-info">curated prompt library</div>
   </div>
-  <div class="sidebar-nav">
-    <a href="prompts/research/" class="sidebar-link"><span>🔬</span>Research</a>
-    <a href="prompts/coding/" class="sidebar-link"><span>💻</span>Coding</a>
-    <a href="prompts/writing/" class="sidebar-link"><span>✍️</span>Writing</a>
-    <a href="prompts/thinking/" class="sidebar-link"><span>🧠</span>Thinking</a>
-    <a href="prompts/creative/" class="sidebar-link"><span>🎨</span>Creative</a>
-    <a href="prompts/data/" class="sidebar-link"><span>📊</span>Data</a>
+  <div class="header-right">
+    <input type="text" class="search-box" id="search" placeholder="filter prompts... ( / )" />
+    <a class="github-btn" href="https://github.com/gaojie058/Sophia-Prompt" target="_blank">
+      ↗ GitHub
+    </a>
   </div>
-  <div class="sidebar-footer">
-    <a href="https://github.com/gaojie058/Sophia-Prompt">GitHub ↗</a>
+</div>
+
+<div class="main-layout">
+
+<div class="tab-hamburger-wrap">
+  <button class="tab-hamburger-btn" id="tab-hamburger-btn">
+    <span class="hamburger-icon">☰</span>
+    <span class="hamburger-label" id="hamburger-label">All Categories</span>
+    <span class="hamburger-count" id="hamburger-count">6</span>
+    <span class="hamburger-arrow">▾</span>
+  </button>
+  <div class="tab-dropdown" id="tab-dropdown">
+    <button class="tab active" data-category="all">
+      All Categories <span class="count">6</span>
+    </button>
+    <button class="tab" data-category="research">
+      <span class="source-dot" style="background:var(--cat-research)"></span>
+      Research <span class="count">0</span>
+    </button>
+    <button class="tab" data-category="coding">
+      <span class="source-dot" style="background:var(--cat-coding)"></span>
+      Coding <span class="count">0</span>
+    </button>
+    <button class="tab" data-category="writing">
+      <span class="source-dot" style="background:var(--cat-writing)"></span>
+      Writing <span class="count">0</span>
+    </button>
+    <button class="tab" data-category="thinking">
+      <span class="source-dot" style="background:var(--cat-thinking)"></span>
+      Thinking <span class="count">0</span>
+    </button>
+    <button class="tab" data-category="creative">
+      <span class="source-dot" style="background:var(--cat-creative)"></span>
+      Creative <span class="count">0</span>
+    </button>
+    <button class="tab" data-category="data">
+      <span class="source-dot" style="background:var(--cat-data)"></span>
+      Data <span class="count">0</span>
+    </button>
   </div>
-</nav>
+</div>
 
-<main>
-  <section class="hero">
-    <div class="hero-badge"><span class="dot"></span>Prompt Library</div>
-    <h1>Sophia's <em>Prompt</em> Collection</h1>
-    <p>A curated library of prompts for research, coding, writing, and beyond.</p>
-  </section>
-
-  <div class="search-wrap">
-    <span class="search-icon">⌕</span>
-    <input type="text" class="search-input" placeholder="Search prompts..." id="searchInput">
+<div class="stats-bar">
+  <div class="stat">
+    <div class="stat-value">6</div>
+    <div class="stat-label">Categories</div>
   </div>
-
-  <div class="grid" id="grid">
-    <a href="prompts/research/" class="card"><span class="card-emoji">🔬</span><span class="card-name">Research</span><span class="card-count">0 prompts</span></a>
-    <a href="prompts/coding/" class="card"><span class="card-emoji">💻</span><span class="card-name">Coding</span><span class="card-count">0 prompts</span></a>
-    <a href="prompts/writing/" class="card"><span class="card-emoji">✍️</span><span class="card-name">Writing</span><span class="card-count">0 prompts</span></a>
-    <a href="prompts/thinking/" class="card"><span class="card-emoji">🧠</span><span class="card-name">Thinking</span><span class="card-count">0 prompts</span></a>
-    <a href="prompts/creative/" class="card"><span class="card-emoji">🎨</span><span class="card-name">Creative</span><span class="card-count">0 prompts</span></a>
-    <a href="prompts/data/" class="card"><span class="card-emoji">📊</span><span class="card-name">Data</span><span class="card-count">0 prompts</span></a>
+  <div class="stat">
+    <div class="stat-value">0</div>
+    <div class="stat-label">Prompts</div>
   </div>
-</main>
+  <div class="stat">
+    <div class="stat-value">—</div>
+    <div class="stat-label">Last Updated</div>
+  </div>
+</div>
 
-<footer>
-  <span>Built with 💜 by Sophia</span>
-  <a href="https://github.com/gaojie058/Sophia-Prompt">github.com/gaojie058/Sophia-Prompt</a>
-</footer>
+<div class="content" id="content">
+  <a class="card" href="prompts/research/" data-category="research">
+    <div class="card-header">
+      <div class="card-indicator" style="background:var(--cat-research)"></div>
+      <div class="card-body">
+        <div class="card-icon">🔬</div>
+        <div class="card-title">Research</div>
+        <div class="card-desc">Academic writing, literature review, paper analysis, methodology design</div>
+      </div>
+    </div>
+    <div class="card-meta">
+      <span class="tag" style="border-left:2px solid var(--cat-research);padding-left:0.5rem">research</span>
+      <span class="tag tag-accent">0 prompts</span>
+    </div>
+  </a>
+
+  <a class="card" href="prompts/coding/" data-category="coding">
+    <div class="card-header">
+      <div class="card-indicator" style="background:var(--cat-coding)"></div>
+      <div class="card-body">
+        <div class="card-icon">💻</div>
+        <div class="card-title">Coding</div>
+        <div class="card-desc">Programming assistance, debugging, code review, architecture design</div>
+      </div>
+    </div>
+    <div class="card-meta">
+      <span class="tag" style="border-left:2px solid var(--cat-coding);padding-left:0.5rem">coding</span>
+      <span class="tag tag-accent">0 prompts</span>
+    </div>
+  </a>
+
+  <a class="card" href="prompts/writing/" data-category="writing">
+    <div class="card-header">
+      <div class="card-indicator" style="background:var(--cat-writing)"></div>
+      <div class="card-body">
+        <div class="card-icon">✍️</div>
+        <div class="card-title">Writing</div>
+        <div class="card-desc">Creative writing, editing, summarization, translation</div>
+      </div>
+    </div>
+    <div class="card-meta">
+      <span class="tag" style="border-left:2px solid var(--cat-writing);padding-left:0.5rem">writing</span>
+      <span class="tag tag-accent">0 prompts</span>
+    </div>
+  </a>
+
+  <a class="card" href="prompts/thinking/" data-category="thinking">
+    <div class="card-header">
+      <div class="card-indicator" style="background:var(--cat-thinking)"></div>
+      <div class="card-body">
+        <div class="card-icon">🧠</div>
+        <div class="card-title">Thinking</div>
+        <div class="card-desc">Problem solving, brainstorming, critical analysis, decision making</div>
+      </div>
+    </div>
+    <div class="card-meta">
+      <span class="tag" style="border-left:2px solid var(--cat-thinking);padding-left:0.5rem">thinking</span>
+      <span class="tag tag-accent">0 prompts</span>
+    </div>
+  </a>
+
+  <a class="card" href="prompts/creative/" data-category="creative">
+    <div class="card-header">
+      <div class="card-indicator" style="background:var(--cat-creative)"></div>
+      <div class="card-body">
+        <div class="card-icon">🎨</div>
+        <div class="card-title">Creative</div>
+        <div class="card-desc">Image generation, design concepts, visual prompts</div>
+      </div>
+    </div>
+    <div class="card-meta">
+      <span class="tag" style="border-left:2px solid var(--cat-creative);padding-left:0.5rem">creative</span>
+      <span class="tag tag-accent">0 prompts</span>
+    </div>
+  </a>
+
+  <a class="card" href="prompts/data/" data-category="data">
+    <div class="card-header">
+      <div class="card-indicator" style="background:var(--cat-data)"></div>
+      <div class="card-body">
+        <div class="card-icon">📊</div>
+        <div class="card-title">Data</div>
+        <div class="card-desc">Data analysis, visualization, statistics, machine learning</div>
+      </div>
+    </div>
+    <div class="card-meta">
+      <span class="tag" style="border-left:2px solid var(--cat-data);padding-left:0.5rem">data</span>
+      <span class="tag tag-accent">0 prompts</span>
+    </div>
+  </a>
+</div>
+
+</div>
+
+<div class="footer">
+  Built with 💜 by Sophia · <a href="https://github.com/gaojie058/Sophia-Prompt">View on GitHub</a>
+</div>
 
 <script>
-function toggleSidebar(){
-  document.querySelector('.sidebar').classList.toggle('active');
-  document.querySelector('.sidebar-overlay').classList.toggle('active');
-}
-document.getElementById('searchInput').addEventListener('input',function(e){
-  const q=e.target.value.toLowerCase();
-  document.querySelectorAll('.card').forEach(c=>{
-    c.style.display=c.textContent.toLowerCase().includes(q)?'':'none';
+  // ─── Hamburger Menu ───
+  const hamburgerBtn = document.getElementById('tab-hamburger-btn');
+  const tabDropdown = document.getElementById('tab-dropdown');
+  const hamburgerLabel = document.getElementById('hamburger-label');
+  const hamburgerCount = document.getElementById('hamburger-count');
+
+  hamburgerBtn.addEventListener('click', e => {
+    e.stopPropagation();
+    tabDropdown.classList.toggle('open');
   });
-});
+
+  document.addEventListener('click', () => tabDropdown.classList.remove('open'));
+
+  // ─── Tab Switching ───
+  tabDropdown.addEventListener('click', e => {
+    const tab = e.target.closest('.tab');
+    if (!tab) return;
+
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+    tabDropdown.classList.remove('open');
+
+    const category = tab.dataset.category;
+    const clone = tab.cloneNode(true);
+    const countEl = clone.querySelector('.count');
+    if (countEl) countEl.remove();
+    hamburgerLabel.textContent = clone.textContent.trim();
+
+    // Filter cards
+    document.querySelectorAll('.card').forEach(card => {
+      card.style.display = (category === 'all' || card.dataset.category === category) ? '' : 'none';
+    });
+  });
+
+  // ─── Search ───
+  document.getElementById('search').addEventListener('input', e => {
+    const q = e.target.value.toLowerCase();
+    document.querySelectorAll('.card').forEach(card => {
+      card.style.display = card.textContent.toLowerCase().includes(q) ? '' : 'none';
+    });
+  });
+
+  // ─── Keyboard Shortcuts ───
+  document.addEventListener('keydown', e => {
+    if (e.key === '/' && document.activeElement.tagName !== 'INPUT') {
+      e.preventDefault();
+      document.getElementById('search').focus();
+    }
+    if (e.key === 'Escape') {
+      document.getElementById('search').blur();
+      document.getElementById('search').value = '';
+      document.querySelectorAll('.card').forEach(c => c.style.display = '');
+    }
+  });
 </script>
 </body>
 </html>
