@@ -4,587 +4,564 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Sophia's Prompt Collection</title>
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><circle cx='16' cy='16' r='14' fill='%238b5cf6' opacity='.15'/><circle cx='16' cy='16' r='9' fill='none' stroke='%238b5cf6' stroke-width='1.5' opacity='.4'/><text x='16' y='21' text-anchor='middle' font-size='14'>✨</text></svg>">
-<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><circle cx='16' cy='16' r='14' fill='%238b5cf6' opacity='.15'/><text x='16' y='21' text-anchor='middle' font-size='14'>✨</text></svg>">
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #ffffff;
-    --surface: #f8f9fa;
-    --surface-hover: #f0f1f3;
-    --border: #e0e0e6;
-    --text: #1a1a2e;
-    --text-dim: #555570;
-    --text-muted: #888899;
-    --accent: #8b5cf6;
-    --accent-light: rgba(139,92,246,0.08);
-    --accent-border: rgba(139,92,246,0.25);
-    --tag-bg: rgba(0,0,0,0.04);
+    --bg: #ffffff; --surface: #f9fafb; --surface-alt: #f3f4f6;
+    --border: #e5e7eb; --border-light: #f0f0f0;
+    --text: #111827; --text-dim: #4b5563; --text-muted: #9ca3af;
+    --accent: #8b5cf6; --accent-light: rgba(139,92,246,0.08); --accent-border: rgba(139,92,246,0.3);
+    --sidebar-w: 260px;
     --font-mono: 'IBM Plex Mono', monospace;
     --font-sans: 'IBM Plex Sans', sans-serif;
-
-    --cat-research: #8b5cf6;
-    --cat-coding: #2563eb;
-    --cat-writing: #d97706;
-    --cat-thinking: #059669;
-    --cat-creative: #e11d48;
-    --cat-data: #0891b2;
+    --cat-research: #8b5cf6; --cat-coding: #2563eb; --cat-writing: #d97706;
+    --cat-thinking: #059669; --cat-creative: #e11d48; --cat-data: #0891b2;
   }
-
   * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { background: var(--bg); color: var(--text); font-family: var(--font-sans); line-height: 1.7; }
 
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: var(--font-sans);
-    line-height: 1.6;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
+  /* ─── Top bar ─── */
+  .topbar {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+    height: 48px; background: var(--bg); border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; padding: 0 1.2rem; gap: 0.8rem;
   }
-
-  /* ─── Header ─── */
-  .header {
-    border-bottom: 1px solid var(--border);
-    padding: 1.5rem 2rem;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 1rem;
+  .topbar-hamburger {
+    display: none; background: none; border: none; font-size: 1.3rem;
+    cursor: pointer; color: var(--text-dim); padding: 0.2rem;
   }
-
-  .header-left {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
+  .topbar-logo { font-family: var(--font-mono); font-size: 0.95rem; font-weight: 600; }
+  .topbar-logo span { color: var(--accent); }
+  .topbar-search {
+    margin-left: auto; background: var(--surface); border: 1px solid var(--border);
+    border-radius: 6px; padding: 0.3rem 0.7rem; font-family: var(--font-mono);
+    font-size: 0.78rem; color: var(--text); outline: none; width: 240px;
+    transition: border-color 0.2s, width 0.2s;
   }
-
-  .logo {
-    font-family: var(--font-mono);
-    font-size: 1.1rem;
-    font-weight: 600;
-    letter-spacing: -0.02em;
-    color: var(--text);
-  }
-
-  .logo span { color: var(--accent); }
-
-  .meta-info {
-    font-size: 0.75rem;
-    color: var(--text-muted);
+  .topbar-search:focus { border-color: var(--accent); width: 300px; }
+  .topbar-search::placeholder { color: var(--text-muted); }
+  .topbar-github {
+    color: var(--text-muted); text-decoration: none; font-size: 0.78rem;
     font-family: var(--font-mono);
   }
-
-  .header-right {
-    display: flex;
-    gap: 0.5rem;
-    align-items: center;
-  }
-
-  .search-box {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    padding: 0.4rem 0.8rem;
-    color: var(--text);
-    font-family: var(--font-mono);
-    font-size: 0.8rem;
-    width: 260px;
-    outline: none;
-    transition: border-color 0.2s;
-  }
-  .search-box:focus { border-color: var(--accent); }
-  .search-box::placeholder { color: var(--text-muted); }
-
-  .github-btn {
-    padding: 0.35rem 0.8rem;
-    background: var(--surface);
-    color: var(--text-dim);
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    font-family: var(--font-mono);
-    font-size: 0.75rem;
-    cursor: pointer;
-    text-decoration: none;
-    display: flex;
-    align-items: center;
-    gap: 0.4rem;
-    transition: all 0.15s;
-  }
-  .github-btn:hover { border-color: var(--text-muted); color: var(--text); }
+  .topbar-github:hover { color: var(--text); }
 
   /* ─── Layout ─── */
-  .main-layout {
-    display: flex;
-    flex-direction: column;
-    flex: 1;
-    min-height: 0;
-    overflow: hidden;
+  .layout { display: flex; margin-top: 48px; min-height: calc(100vh - 48px); }
+
+  /* ─── Sidebar ─── */
+  .sidebar {
+    position: fixed; top: 48px; left: 0; bottom: 0;
+    width: var(--sidebar-w); background: var(--surface);
+    border-right: 1px solid var(--border); overflow-y: auto;
+    padding: 1rem 0; z-index: 100;
+    transition: transform 0.25s ease;
+  }
+  .sidebar-overlay {
+    display: none; position: fixed; inset: 0; z-index: 99;
+    background: rgba(0,0,0,0.3);
   }
 
-  /* ─── Hamburger Tab ─── */
-  .tab-hamburger-wrap {
-    position: relative;
-    flex-shrink: 0;
-    width: 100%;
-    z-index: 100;
+  .nav-group { margin-bottom: 0.6rem; }
+  .nav-category {
+    padding: 0.4rem 1.2rem; font-family: var(--font-mono); font-size: 0.72rem;
+    font-weight: 600; color: var(--text-muted); text-transform: uppercase;
+    letter-spacing: 0.05em; display: flex; align-items: center; gap: 0.5rem;
   }
+  .cat-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
 
-  .tab-hamburger-btn {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    width: 100%;
-    padding: 0.7rem 1rem;
-    font-size: 0.85rem;
-    font-family: var(--font-mono);
-    color: var(--text);
-    background: var(--surface);
-    border: none;
-    border-bottom: 1px solid var(--border);
-    cursor: pointer;
-    transition: background 0.2s;
+  .nav-item {
+    display: block; padding: 0.3rem 1.2rem 0.3rem 2rem;
+    font-size: 0.82rem; color: var(--text-dim); text-decoration: none;
+    border-left: 2px solid transparent; transition: all 0.15s;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
   }
-  .tab-hamburger-btn:hover { background: var(--surface-hover); }
-
-  .hamburger-icon { font-size: 1.1rem; }
-  .hamburger-label { font-weight: 600; }
-  .hamburger-count {
-    background: var(--tag-bg);
-    padding: 0.1rem 0.5rem;
-    border-radius: 10px;
-    font-size: 0.7rem;
-    color: var(--text-dim);
-  }
-  .hamburger-arrow { margin-left: auto; color: var(--text-muted); font-size: 0.8rem; }
-
-  .tab-dropdown {
-    display: none;
-    position: absolute;
-    top: 100%;
-    left: 0; right: 0;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-top: none;
-    box-shadow: 0 8px 24px rgba(0,0,0,0.12);
-    max-height: 70vh;
-    overflow-y: auto;
-    z-index: 101;
-  }
-  .tab-dropdown.open { display: flex; flex-direction: column; }
-
-  .tab {
-    padding: 0.6rem 1rem;
-    font-size: 0.8rem;
-    font-family: var(--font-mono);
-    color: var(--text-muted);
-    cursor: pointer;
-    border-left: 2px solid transparent;
-    transition: all 0.2s;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    background: none;
-    border-top: none;
-    border-bottom: none;
-    border-right: none;
-    text-align: left;
-  }
-  .tab:hover { color: var(--text-dim); background: var(--surface-hover); }
-  .tab.active {
-    color: var(--text);
-    border-left-color: var(--accent);
-    background: var(--bg);
-  }
-  .tab .count {
-    background: var(--tag-bg);
-    padding: 0.1rem 0.45rem;
-    border-radius: 10px;
-    font-size: 0.65rem;
-    color: var(--text-dim);
-    margin-left: auto;
-  }
-  .source-dot {
-    width: 6px; height: 6px;
-    border-radius: 50%;
-    display: inline-block;
-    flex-shrink: 0;
-  }
-
-  /* ─── Stats Bar ─── */
-  .stats-bar {
-    display: flex;
-    gap: 2rem;
-    padding: 1rem 2rem;
-    border-bottom: 1px solid var(--border);
-    flex-wrap: wrap;
-  }
-  .stat { display: flex; flex-direction: column; gap: 0.1rem; }
-  .stat-value {
-    font-family: var(--font-mono);
-    font-size: 1.4rem;
-    font-weight: 600;
-    color: var(--text);
-  }
-  .stat-label {
-    font-size: 0.7rem;
-    color: var(--text-muted);
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
+  .nav-item:hover { color: var(--text); background: var(--surface-alt); }
+  .nav-item.active {
+    color: var(--accent); border-left-color: var(--accent);
+    background: var(--accent-light); font-weight: 500;
   }
 
   /* ─── Content ─── */
   .content {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 0.75rem;
-    width: 100%;
-    padding: 1.5rem 2rem;
-    flex: 1;
-    overflow-y: auto;
-    align-content: start;
+    flex: 1; margin-left: var(--sidebar-w); padding: 2rem 3rem 4rem;
+    max-width: 860px;
   }
 
-  /* ─── Cards ─── */
-  .card {
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 1.4rem;
-    background: var(--surface);
-    transition: all 0.15s;
-    text-decoration: none;
-    color: inherit;
-    display: flex;
-    flex-direction: column;
-    gap: 0.6rem;
+  /* Category headers */
+  .cat-header {
+    margin-top: 2.5rem; margin-bottom: 1.5rem; padding-bottom: 0.6rem;
+    border-bottom: 2px solid var(--border);
   }
-  .card:hover {
-    background: var(--surface-hover);
-    border-color: #c8c8d0;
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+  .cat-header:first-child { margin-top: 0; }
+  .cat-header h1 {
+    font-size: 1.5rem; font-weight: 600;
+    display: flex; align-items: center; gap: 0.5rem;
+  }
+  .cat-header p { font-size: 0.85rem; color: var(--text-dim); margin-top: 0.2rem; }
+
+  /* Section headers */
+  .section-anchor { scroll-margin-top: 64px; }
+  h2.section-title {
+    font-size: 1.1rem; font-weight: 600; margin: 2rem 0 1rem;
+    color: var(--text); display: flex; align-items: center; gap: 0.4rem;
   }
 
-  .card-header {
-    display: flex;
-    align-items: flex-start;
-    gap: 0.8rem;
+  /* Prompt cards */
+  .prompt {
+    margin-bottom: 1.4rem; padding-bottom: 1.4rem;
+    border-bottom: 1px solid var(--border-light);
+  }
+  .prompt:last-child { border-bottom: none; }
+  .prompt-label {
+    font-weight: 600; font-size: 0.88rem; margin-bottom: 0.4rem; color: var(--text);
+  }
+  .prompt-box {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 6px;
+    padding: 0.8rem 1rem; font-size: 0.84rem; color: var(--text-dim);
+    line-height: 1.65; position: relative; cursor: pointer;
+    transition: border-color 0.2s; white-space: pre-wrap;
+  }
+  .prompt-box:hover { border-color: var(--accent); }
+  .prompt-box::after {
+    content: "📋 Copy"; position: absolute; top: 0.5rem; right: 0.6rem;
+    font-size: 0.7rem; font-family: var(--font-mono); color: var(--text-muted);
+    opacity: 0; transition: opacity 0.2s;
+  }
+  .prompt-box:hover::after { opacity: 1; }
+
+  .note {
+    background: var(--accent-light); border-left: 3px solid var(--accent);
+    padding: 0.7rem 1rem; border-radius: 0 6px 6px 0; margin: 0.8rem 0;
+    font-size: 0.82rem; color: var(--text-dim);
+  }
+  .note strong { color: var(--text); }
+
+  /* Reference card */
+  .ref-card {
+    border: 1px solid var(--border); border-radius: 8px; padding: 1.2rem;
+    background: var(--surface); margin-bottom: 1.2rem;
+  }
+  .ref-card h3 { font-size: 0.95rem; margin-bottom: 0.4rem; }
+  .ref-card p, .ref-card li { font-size: 0.84rem; color: var(--text-dim); }
+  .ref-card ul { padding-left: 1.2rem; margin-top: 0.5rem; }
+  .ref-card a { color: var(--accent); text-decoration: none; font-family: var(--font-mono); font-size: 0.8rem; }
+
+  /* TODO */
+  .todo-item {
+    display: flex; align-items: flex-start; gap: 0.5rem;
+    margin-bottom: 0.3rem; font-size: 0.84rem; color: var(--text-dim);
   }
 
-  .card-indicator {
-    width: 3px;
-    min-height: 2rem;
-    border-radius: 2px;
-    flex-shrink: 0;
-    margin-top: 0.15rem;
+  /* Empty */
+  .empty-cat {
+    padding: 2rem; text-align: center; color: var(--text-muted);
+    font-family: var(--font-mono); font-size: 0.85rem;
+    border: 1px dashed var(--border); border-radius: 8px;
   }
 
-  .card-icon {
-    font-size: 1.8rem;
-    line-height: 1;
-  }
+  /* Search highlight */
+  .search-hidden { display: none !important; }
+  .search-highlight { background: rgba(139,92,246,0.2); border-radius: 2px; }
 
-  .card-body { flex: 1; }
-
-  .card-title {
-    font-size: 0.95rem;
-    font-weight: 600;
-    color: var(--text);
-    margin-bottom: 0.3rem;
+  /* Toast */
+  .toast {
+    position: fixed; bottom: 1.5rem; left: 50%; transform: translateX(-50%);
+    background: var(--text); color: #fff; padding: 0.45rem 1rem;
+    border-radius: 6px; font-size: 0.78rem; font-family: var(--font-mono);
+    opacity: 0; transition: opacity 0.3s; pointer-events: none; z-index: 999;
   }
-
-  .card-desc {
-    font-size: 0.8rem;
-    color: var(--text-dim);
-    line-height: 1.5;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-  }
-
-  .card-meta {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.4rem;
-    align-items: center;
-  }
-
-  .tag {
-    font-size: 0.68rem;
-    font-family: var(--font-mono);
-    padding: 0.15rem 0.5rem;
-    border-radius: 4px;
-    background: var(--tag-bg);
-    color: var(--text-dim);
-  }
-
-  .tag-accent {
-    background: var(--accent-light);
-    color: var(--accent);
-  }
-
-  /* ─── Empty State ─── */
-  .empty-state {
-    grid-column: 1 / -1;
-    text-align: center;
-    padding: 4rem 2rem;
-    color: var(--text-muted);
-    font-family: var(--font-mono);
-    font-size: 0.85rem;
-  }
-  .empty-state::before {
-    content: "∅";
-    display: block;
-    font-size: 2rem;
-    margin-bottom: 1rem;
-  }
-
-  /* ─── Footer ─── */
-  .footer {
-    border-top: 1px solid var(--border);
-    padding: 1.5rem 2rem;
-    text-align: center;
-    font-size: 0.75rem;
-    color: var(--text-muted);
-    font-family: var(--font-mono);
-  }
-  .footer a { color: var(--accent); text-decoration: none; }
-  .footer a:hover { text-decoration: underline; }
+  .toast.show { opacity: 1; }
 
   /* ─── Responsive ─── */
   @media (max-width: 768px) {
-    .header { padding: 1rem; }
-    .search-box { width: 100%; }
-    .content { padding: 1rem; grid-template-columns: 1fr; }
-    .stats-bar { padding: 0.8rem 1rem; gap: 1.2rem; }
+    .topbar-hamburger { display: block; }
+    .sidebar { transform: translateX(-100%); }
+    .sidebar.open { transform: translateX(0); box-shadow: 4px 0 20px rgba(0,0,0,0.1); }
+    .sidebar-overlay.open { display: block; }
+    .content { margin-left: 0; padding: 1.5rem 1rem 3rem; }
+    .topbar-search { width: 140px; }
+    .topbar-search:focus { width: 180px; }
   }
 </style>
 </head>
 <body>
 
-<div class="header">
-  <div class="header-left">
-    <div class="logo">Sophia<span>Prompt</span></div>
-    <div class="meta-info">curated prompt library</div>
-  </div>
-  <div class="header-right">
-    <input type="text" class="search-box" id="search" placeholder="filter prompts... ( / )" />
-    <a class="github-btn" href="https://github.com/gaojie058/Sophia-Prompt" target="_blank">
-      ↗ GitHub
-    </a>
-  </div>
+<!-- Top Bar -->
+<div class="topbar">
+  <button class="topbar-hamburger" id="hamburger" onclick="toggleSidebar()">☰</button>
+  <div class="topbar-logo">Sophia<span>Prompt</span></div>
+  <input type="text" class="topbar-search" id="search" placeholder="Search prompts... ( / )" />
+  <a class="topbar-github" href="https://github.com/gaojie058/Sophia-Prompt" target="_blank">↗ GitHub</a>
 </div>
 
-<div class="main-layout">
+<div class="layout">
 
-<div class="tab-hamburger-wrap">
-  <button class="tab-hamburger-btn" id="tab-hamburger-btn">
-    <span class="hamburger-icon">☰</span>
-    <span class="hamburger-label" id="hamburger-label">All Categories</span>
-    <span class="hamburger-count" id="hamburger-count">6</span>
-    <span class="hamburger-arrow">▾</span>
-  </button>
-  <div class="tab-dropdown" id="tab-dropdown">
-    <button class="tab active" data-category="all">
-      All Categories <span class="count">6</span>
-    </button>
-    <button class="tab" data-category="research">
-      <span class="source-dot" style="background:var(--cat-research)"></span>
-      Research <span class="count">0</span>
-    </button>
-    <button class="tab" data-category="coding">
-      <span class="source-dot" style="background:var(--cat-coding)"></span>
-      Coding <span class="count">0</span>
-    </button>
-    <button class="tab" data-category="writing">
-      <span class="source-dot" style="background:var(--cat-writing)"></span>
-      Writing <span class="count">0</span>
-    </button>
-    <button class="tab" data-category="thinking">
-      <span class="source-dot" style="background:var(--cat-thinking)"></span>
-      Thinking <span class="count">0</span>
-    </button>
-    <button class="tab" data-category="creative">
-      <span class="source-dot" style="background:var(--cat-creative)"></span>
-      Creative <span class="count">0</span>
-    </button>
-    <button class="tab" data-category="data">
-      <span class="source-dot" style="background:var(--cat-data)"></span>
-      Data <span class="count">0</span>
-    </button>
+<!-- Sidebar -->
+<div class="sidebar-overlay" id="overlay" onclick="toggleSidebar()"></div>
+<nav class="sidebar" id="sidebar">
+  <!-- Research -->
+  <div class="nav-group">
+    <div class="nav-category"><span class="cat-dot" style="background:var(--cat-research)"></span> Research</div>
+    <a class="nav-item" href="#lit-review">📚 Literature Review</a>
+    <a class="nav-item" href="#paper-writing">✍️ Paper Writing</a>
+    <a class="nav-item" href="#experiment">🧪 Experiment Design</a>
+    <a class="nav-item" href="#rebuttal">🔄 Revision & Rebuttal</a>
+    <a class="nav-item" href="#self-critique">🎯 Self-Critique Workflow</a>
+  </div>
+  <!-- Data -->
+  <div class="nav-group">
+    <div class="nav-category"><span class="cat-dot" style="background:var(--cat-data)"></span> Data</div>
+    <a class="nav-item" href="#quant">🔢 Quantitative Analysis</a>
+    <a class="nav-item" href="#qual">🗣️ Qualitative Analysis</a>
+    <a class="nav-item" href="#viz">📈 Visualization</a>
+  </div>
+  <!-- Creative -->
+  <div class="nav-group">
+    <div class="nav-category"><span class="cat-dot" style="background:var(--cat-creative)"></span> Creative</div>
+    <a class="nav-item" href="#creative-ref">🎨 Design References</a>
+  </div>
+  <!-- Coding -->
+  <div class="nav-group">
+    <div class="nav-category"><span class="cat-dot" style="background:var(--cat-coding)"></span> Coding</div>
+    <a class="nav-item" href="#coding" style="color:var(--text-muted);font-style:italic">coming soon</a>
+  </div>
+  <!-- Writing -->
+  <div class="nav-group">
+    <div class="nav-category"><span class="cat-dot" style="background:var(--cat-writing)"></span> Writing</div>
+    <a class="nav-item" href="#writing" style="color:var(--text-muted);font-style:italic">coming soon</a>
+  </div>
+  <!-- Thinking -->
+  <div class="nav-group">
+    <div class="nav-category"><span class="cat-dot" style="background:var(--cat-thinking)"></span> Thinking</div>
+    <a class="nav-item" href="#thinking" style="color:var(--text-muted);font-style:italic">coming soon</a>
+  </div>
+</nav>
+
+<!-- Main Content -->
+<main class="content" id="content">
+
+<!-- ═══════ RESEARCH ═══════ -->
+<div class="cat-header" id="research">
+  <h1>🔬 Research</h1>
+  <p>Academic writing, literature review, paper analysis, methodology design</p>
+</div>
+
+<h2 class="section-title section-anchor" id="lit-review">📚 Literature Review</h2>
+
+<div class="prompt">
+  <div class="prompt-label">找某领域最新论文</div>
+  <div class="prompt-box" onclick="copy(this)">Search for the 10 most cited papers on [topic] published in the last 2 years from top venues (CHI, CSCW, UIST). Summarize each in 2-3 sentences.</div>
+</div>
+<div class="prompt">
+  <div class="prompt-label">找 Research Gap</div>
+  <div class="prompt-box" onclick="copy(this)">I'm reading papers about [topic]. Based on these summaries, identify potential research gaps and underexplored directions: [paste summaries]</div>
+</div>
+<div class="prompt">
+  <div class="prompt-label">生成 Related Work 表格</div>
+  <div class="prompt-box" onclick="copy(this)">Organize these papers into a comparison table with columns: Paper, Year, Method, Key Finding, Limitation. Papers: [list]</div>
+</div>
+<div class="prompt">
+  <div class="prompt-label">写 Related Work 段落</div>
+  <div class="prompt-box" onclick="copy(this)">Write a Related Work section (~500 words) that synthesizes these papers into 2-3 thematic groups. Papers: [list with summaries]</div>
+</div>
+<div class="prompt">
+  <div class="prompt-label">快速总结一篇论文</div>
+  <div class="prompt-box" onclick="copy(this)">Summarize this paper in a structured format: (1) Research Question, (2) Method, (3) Key Findings, (4) Limitations, (5) Relevance to my work on [your topic]. Paper: [paste abstract or content]</div>
+</div>
+
+<h2 class="section-title section-anchor" id="paper-writing">✍️ Paper Writing</h2>
+
+<div class="prompt">
+  <div class="prompt-label">生成论文 Outline</div>
+  <div class="prompt-box" onclick="copy(this)">Create a detailed outline for a CHI/CSCW paper about [topic]. Include all standard sections with 2-3 bullet points of what each should cover.</div>
+</div>
+<div class="prompt">
+  <div class="prompt-label">写 Introduction</div>
+  <div class="prompt-box" onclick="copy(this)">Write an Introduction (~800 words) for a paper about [topic]. Follow this structure: (1) broad motivation, (2) specific problem, (3) what we did, (4) contributions list.</div>
+</div>
+<div class="prompt">
+  <div class="prompt-label">写 Method Section</div>
+  <div class="prompt-box" onclick="copy(this)">Write a Method section describing: participants (N=[n], recruited via [method]), study design ([between/within]-subjects), procedure, and analysis approach. Details: [provide details]</div>
+</div>
+<div class="prompt">
+  <div class="prompt-label">写 Discussion</div>
+  <div class="prompt-box" onclick="copy(this)">Based on these findings: [list findings]. Write a Discussion section that: (1) interprets results, (2) compares with prior work, (3) discusses implications for design, (4) acknowledges limitations.</div>
+</div>
+<div class="prompt">
+  <div class="prompt-label">学术英语润色</div>
+  <div class="prompt-box" onclick="copy(this)">Polish this paragraph for academic writing. Improve clarity, flow, and precision while keeping the meaning. Flag any logical gaps: [paste text]</div>
+</div>
+<div class="prompt">
+  <div class="prompt-label">缩减字数</div>
+  <div class="prompt-box" onclick="copy(this)">Shorten this section by 30% while keeping all key information. Current word count: [n]. Target: [n]. Text: [paste]</div>
+</div>
+
+<h2 class="section-title section-anchor" id="experiment">🧪 Experiment Design</h2>
+
+<div class="prompt">
+  <div class="prompt-label">细化 Research Questions</div>
+  <div class="prompt-box" onclick="copy(this)">My broad topic is [topic]. Help me formulate 3 specific, testable research questions (RQs) that are scoped for a single paper.</div>
+</div>
+<div class="prompt">
+  <div class="prompt-label">设计用户实验</div>
+  <div class="prompt-box" onclick="copy(this)">I want to evaluate [system/method] for [task]. Design a within-subjects user study: participants, conditions, tasks, measures (both quantitative and qualitative), and procedure.</div>
+</div>
+<div class="prompt">
+  <div class="prompt-label">设计问卷</div>
+  <div class="prompt-box" onclick="copy(this)">Design a post-task questionnaire for evaluating [system] on: usability, usefulness, trust, and satisfaction. Use 7-point Likert scales. Include 2-3 open-ended questions.</div>
+</div>
+<div class="prompt">
+  <div class="prompt-label">写 IRB Protocol</div>
+  <div class="prompt-box" onclick="copy(this)">Draft an IRB protocol summary for a study that involves [brief description]. Include: purpose, participants, procedures, risks, data handling, and consent process.</div>
+</div>
+
+<h2 class="section-title section-anchor" id="rebuttal">🔄 Revision & Rebuttal</h2>
+
+<div class="prompt">
+  <div class="prompt-label">回复 Reviewer</div>
+  <div class="prompt-box" onclick="copy(this)">Reviewer comment: "[paste comment]". Draft a professional rebuttal response that: (1) thanks the reviewer, (2) addresses the concern directly, (3) describes what we changed, (4) quotes the revised text if applicable.</div>
+</div>
+<div class="prompt">
+  <div class="prompt-label">分析 Review 意见</div>
+  <div class="prompt-box" onclick="copy(this)">Here are the reviews for my paper. Categorize each comment as: (a) must-fix, (b) should-address, (c) optional/stylistic. Identify common themes across reviewers. Reviews: [paste]</div>
+</div>
+<div class="prompt">
+  <div class="prompt-label">格式检查</div>
+  <div class="prompt-box" onclick="copy(this)">Check this LaTeX source against [ACM/IEEE] formatting requirements. Flag any issues with: margins, font sizes, citation format, figure placement, page limit.</div>
+</div>
+<div class="prompt">
+  <div class="prompt-label">生成 Talk Outline</div>
+  <div class="prompt-box" onclick="copy(this)">Create a 15-minute presentation outline for this paper. Structure: motivation (2 min), background (2 min), method (3 min), results (5 min), discussion (2 min), Q&A (1 min). Paper: [summary]</div>
+</div>
+
+<h2 class="section-title section-anchor" id="self-critique">🎯 Self-Critique Workflow</h2>
+
+<div class="note" style="margin-bottom:1.2rem">
+  <strong>A reusable workflow for stress-testing research ideas</strong> before presenting them to advisors, reviewers, or search committees. By pre-rehearsing critiques, external feedback becomes validation rather than attack.
+</div>
+
+<div class="prompt">
+  <div class="prompt-label">Step 1: Generate the Idea</div>
+  <div class="prompt-box" onclick="copy(this)">I have a research idea about [X]. Help me flesh it out into a 1-page description including:
+- Motivation: Why does this problem matter?
+- Approach: What will I do?
+- Expected Contribution: What's new?
+- Novelty: How is this different from existing work?</div>
+</div>
+<div class="prompt">
+  <div class="prompt-label">Step 2: Generate the Harshest Review</div>
+  <div class="prompt-box" onclick="copy(this)">You are a senior HCI/NLP/SE reviewer known for being extremely tough and specific. Write a detailed review of this research idea with:
+- 3 major weaknesses
+- 2 minor weaknesses
+
+Be specific, harsh, and realistic. Consider:
+- Novelty: Has this been done before? What's truly new?
+- Technical depth: Is the approach rigorous enough?
+- Evaluation plan: How would you actually validate this?
+- Scope: Is this too broad or too narrow?
+- Positioning: How does this compare to [specific related work]?
+
+Do NOT be nice. I need to hear the worst.</div>
+</div>
+<div class="prompt">
+  <div class="prompt-label">Step 2b: Domain-Specific — NLP</div>
+  <div class="prompt-box" onclick="copy(this)">Now review this as an ACL/EMNLP reviewer. Focus on: dataset quality, baseline comparisons, reproducibility, and whether the NLP contribution is substantial or just an application.</div>
+</div>
+<div class="prompt">
+  <div class="prompt-label">Step 2b: Domain-Specific — SE</div>
+  <div class="prompt-box" onclick="copy(this)">Now review this as an ICSE/FSE reviewer. Focus on: practical relevance, scalability, developer study design, and whether the SE community would find this impactful.</div>
+</div>
+<div class="prompt">
+  <div class="prompt-label">Step 2b: Domain-Specific — HCI</div>
+  <div class="prompt-box" onclick="copy(this)">Now review this as a CHI reviewer. Focus on: user study rigor, design rationale, theoretical grounding, and whether the contribution goes beyond "we built a system."</div>
+</div>
+<div class="prompt">
+  <div class="prompt-label">⚠️ Step 3: Write Your Own Rebuttal</div>
+  <div class="note">
+    <strong>Do this yourself. Do NOT let AI write it.</strong><br>
+    For each weakness: ✅ Can defend → Write your response. ❌ Can't defend → This is a real weakness.<br>
+    The ones you can't rebut are the ones that need fixing.
   </div>
 </div>
+<div class="prompt">
+  <div class="prompt-label">Step 4: Revise the Idea</div>
+  <div class="prompt-box" onclick="copy(this)">Based on my rebuttal below, help me revise the original idea to address the weaknesses I couldn't fully defend:
 
-<div class="stats-bar">
-  <div class="stat">
-    <div class="stat-value">6</div>
-    <div class="stat-label">Categories</div>
-  </div>
-  <div class="stat">
-    <div class="stat-value">0</div>
-    <div class="stat-label">Prompts</div>
-  </div>
-  <div class="stat">
-    <div class="stat-value">—</div>
-    <div class="stat-label">Last Updated</div>
-  </div>
+[Paste your rebuttal]
+
+Focus on strengthening the weak points while preserving the core contribution.</div>
+</div>
+<div class="prompt">
+  <div class="prompt-label">Step 5: Search Committee Simulation</div>
+  <div class="prompt-box" onclick="copy(this)">You are a search committee member at a top CS department. I just gave a 45-minute job talk based on this work.
+
+What would you ask during Q&A? What concerns would you raise in the closed-door committee discussion afterward? Consider:
+- Does this person have a clear research identity?
+- Is there a viable 5-year research agenda here?
+- Would this person get tenure?
+- How does this compare to other candidates on the market?</div>
+</div>
+<div class="prompt">
+  <div class="prompt-label">Step 6: Advisor Meeting Simulation</div>
+  <div class="prompt-box" onclick="copy(this)">You are a senior professor who gives high-level feedback but rarely does hands-on work. Critique this idea the way you would in a 1-on-1 meeting: focus on framing, positioning, and whether the story is compelling. Point out what's unclear or unconvincing.</div>
 </div>
 
-<div class="content" id="content">
-  <a class="card" href="pages/research.html" data-category="research">
-    <div class="card-header">
-      <div class="card-indicator" style="background:var(--cat-research)"></div>
-      <div class="card-body">
-        <div class="card-icon">🔬</div>
-        <div class="card-title">Research</div>
-        <div class="card-desc">Academic writing, literature review, paper analysis, methodology design</div>
-      </div>
-    </div>
-    <div class="card-meta">
-      <span class="tag" style="border-left:2px solid var(--cat-research);padding-left:0.5rem">research</span>
-      <span class="tag tag-accent">4 prompts</span>
-    </div>
-  </a>
-
-  <a class="card" href="pages/coding.html" data-category="coding">
-    <div class="card-header">
-      <div class="card-indicator" style="background:var(--cat-coding)"></div>
-      <div class="card-body">
-        <div class="card-icon">💻</div>
-        <div class="card-title">Coding</div>
-        <div class="card-desc">Programming assistance, debugging, code review, architecture design</div>
-      </div>
-    </div>
-    <div class="card-meta">
-      <span class="tag" style="border-left:2px solid var(--cat-coding);padding-left:0.5rem">coding</span>
-      <span class="tag tag-accent">0 prompts</span>
-    </div>
-  </a>
-
-  <a class="card" href="pages/writing.html" data-category="writing">
-    <div class="card-header">
-      <div class="card-indicator" style="background:var(--cat-writing)"></div>
-      <div class="card-body">
-        <div class="card-icon">✍️</div>
-        <div class="card-title">Writing</div>
-        <div class="card-desc">Creative writing, editing, summarization, translation</div>
-      </div>
-    </div>
-    <div class="card-meta">
-      <span class="tag" style="border-left:2px solid var(--cat-writing);padding-left:0.5rem">writing</span>
-      <span class="tag tag-accent">0 prompts</span>
-    </div>
-  </a>
-
-  <a class="card" href="pages/thinking.html" data-category="thinking">
-    <div class="card-header">
-      <div class="card-indicator" style="background:var(--cat-thinking)"></div>
-      <div class="card-body">
-        <div class="card-icon">🧠</div>
-        <div class="card-title">Thinking</div>
-        <div class="card-desc">Problem solving, brainstorming, critical analysis, decision making</div>
-      </div>
-    </div>
-    <div class="card-meta">
-      <span class="tag" style="border-left:2px solid var(--cat-thinking);padding-left:0.5rem">thinking</span>
-      <span class="tag tag-accent">0 prompts</span>
-    </div>
-  </a>
-
-  <a class="card" href="pages/creative.html" data-category="creative">
-    <div class="card-header">
-      <div class="card-indicator" style="background:var(--cat-creative)"></div>
-      <div class="card-body">
-        <div class="card-icon">🎨</div>
-        <div class="card-title">Creative</div>
-        <div class="card-desc">Image generation, design concepts, visual prompts</div>
-      </div>
-    </div>
-    <div class="card-meta">
-      <span class="tag" style="border-left:2px solid var(--cat-creative);padding-left:0.5rem">creative</span>
-      <span class="tag tag-accent">0 prompts</span>
-    </div>
-  </a>
-
-  <a class="card" href="pages/data.html" data-category="data">
-    <div class="card-header">
-      <div class="card-indicator" style="background:var(--cat-data)"></div>
-      <div class="card-body">
-        <div class="card-icon">📊</div>
-        <div class="card-title">Data</div>
-        <div class="card-desc">Data analysis, visualization, statistics, machine learning</div>
-      </div>
-    </div>
-    <div class="card-meta">
-      <span class="tag" style="border-left:2px solid var(--cat-data);padding-left:0.5rem">data</span>
-      <span class="tag tag-accent">1 prompt</span>
-    </div>
-  </a>
+<!-- TODO -->
+<h2 class="section-title" style="margin-top:2.5rem">📋 Research TODO</h2>
+<div class="todo-item">☐ First-pass qualitative coding — eat your own dog food</div>
+<div class="todo-item">☐ 论文初稿生成 — related work、methods、results 结构</div>
+<div class="todo-item">☐ 研究原型代码 — 80% 的前后端代码可以 AI 写</div>
+<div class="todo-item">☐ 数据清洗预处理 — 标准化 pipeline</div>
+<div class="todo-item">☐ 提交前 self-review — argument consistency checker</div>
+<div class="note" style="margin-top:0.8rem">
+  <strong>🚫 永远不要交给 AI 的：</strong>选题判断、数据的深层解释、导师/合作者关系、论文叙事框架、mentoring。这些是你的不可替代核心。
 </div>
 
+<!-- ═══════ DATA ═══════ -->
+<div class="cat-header" id="data">
+  <h1>📊 Data</h1>
+  <p>Data analysis, visualization, statistics, machine learning</p>
 </div>
 
-<div class="footer">
-  Built with 💜 by Sophia · <a href="https://github.com/gaojie058/Sophia-Prompt">View on GitHub</a>
+<h2 class="section-title section-anchor" id="quant">🔢 Quantitative Analysis</h2>
+<div class="prompt">
+  <div class="prompt-label">选择统计方法</div>
+  <div class="prompt-box" onclick="copy(this)">I have [describe data: e.g., 2 conditions × 20 participants, measuring task completion time and error rate]. What statistical tests should I use? Explain assumptions to check.</div>
 </div>
+<div class="prompt">
+  <div class="prompt-label">写 Results 段落</div>
+  <div class="prompt-box" onclick="copy(this)">Write a Results paragraph reporting these statistics in APA format: [paste stats]. Include effect sizes and confidence intervals.</div>
+</div>
+
+<h2 class="section-title section-anchor" id="qual">🗣️ Qualitative Analysis</h2>
+<div class="prompt">
+  <div class="prompt-label">Thematic Analysis 编码</div>
+  <div class="prompt-box" onclick="copy(this)">Here are interview excerpts about [topic]. Perform open coding: identify initial codes, then group them into themes. Excerpts: [paste]</div>
+</div>
+<div class="prompt">
+  <div class="prompt-label">生成 Codebook</div>
+  <div class="prompt-box" onclick="copy(this)">Based on these codes and themes, create a codebook table with columns: Theme, Code, Definition, Example Quote. Codes: [list]</div>
+</div>
+
+<h2 class="section-title section-anchor" id="viz">📈 Visualization</h2>
+<div class="prompt">
+  <div class="prompt-label">推荐图表类型</div>
+  <div class="prompt-box" onclick="copy(this)">I need to visualize [describe data and comparison]. Suggest the best chart type and provide Python (matplotlib/seaborn) code to create it.</div>
+</div>
+
+<!-- ═══════ CREATIVE ═══════ -->
+<div class="cat-header" id="creative">
+  <h1>🎨 Creative</h1>
+  <p>Image generation, design concepts, visual prompts</p>
+</div>
+
+<h2 class="section-title section-anchor" id="creative-ref">🎨 Design References</h2>
+<div class="ref-card">
+  <h3>React Visualized — Design Style Reference</h3>
+  <a href="https://react.gg/visualized" target="_blank">↗ react.gg/visualized</a>
+  <p style="margin-top:0.4rem">An interactive, scroll-driven visual exploration of core React concepts.</p>
+  <ul>
+    <li><strong>Scroll-driven storytelling</strong> — content unfolds as user scrolls</li>
+    <li><strong>Dark theme with vibrant accents</strong></li>
+    <li><strong>Progressive disclosure</strong> — complex topics in digestible sections</li>
+    <li><strong>Minimal text, maximum visual</strong></li>
+  </ul>
+</div>
+
+<!-- ═══════ CODING ═══════ -->
+<div class="cat-header" id="coding">
+  <h1>💻 Coding</h1>
+  <p>Programming assistance, debugging, code review, architecture design</p>
+</div>
+<div class="empty-cat">✨ No prompts yet — this collection is growing!</div>
+
+<!-- ═══════ WRITING ═══════ -->
+<div class="cat-header" id="writing">
+  <h1>✍️ Writing</h1>
+  <p>Creative writing, editing, summarization, translation</p>
+</div>
+<div class="empty-cat">✨ No prompts yet — this collection is growing!</div>
+
+<!-- ═══════ THINKING ═══════ -->
+<div class="cat-header" id="thinking">
+  <h1>🧠 Thinking</h1>
+  <p>Problem solving, brainstorming, critical analysis, decision making</p>
+</div>
+<div class="empty-cat">✨ No prompts yet — this collection is growing!</div>
+
+</main>
+</div>
+
+<div class="toast" id="toast">Copied to clipboard ✓</div>
 
 <script>
-  // ─── Hamburger Menu ───
-  const hamburgerBtn = document.getElementById('tab-hamburger-btn');
-  const tabDropdown = document.getElementById('tab-dropdown');
-  const hamburgerLabel = document.getElementById('hamburger-label');
-  const hamburgerCount = document.getElementById('hamburger-count');
-
-  hamburgerBtn.addEventListener('click', e => {
-    e.stopPropagation();
-    tabDropdown.classList.toggle('open');
+// Copy prompt
+function copy(el) {
+  navigator.clipboard.writeText(el.textContent.trim()).then(() => {
+    const t = document.getElementById('toast');
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 1500);
   });
+}
 
-  document.addEventListener('click', () => tabDropdown.classList.remove('open'));
+// Sidebar toggle (mobile)
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('overlay').classList.toggle('open');
+}
 
-  // ─── Tab Switching ───
-  tabDropdown.addEventListener('click', e => {
-    const tab = e.target.closest('.tab');
-    if (!tab) return;
-
-    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-    tab.classList.add('active');
-    tabDropdown.classList.remove('open');
-
-    const category = tab.dataset.category;
-    const clone = tab.cloneNode(true);
-    const countEl = clone.querySelector('.count');
-    if (countEl) countEl.remove();
-    hamburgerLabel.textContent = clone.textContent.trim();
-
-    // Filter cards
-    document.querySelectorAll('.card').forEach(card => {
-      card.style.display = (category === 'all' || card.dataset.category === category) ? '' : 'none';
-    });
+// Close sidebar on nav click (mobile)
+document.querySelectorAll('.nav-item').forEach(a => {
+  a.addEventListener('click', () => {
+    document.getElementById('sidebar').classList.remove('open');
+    document.getElementById('overlay').classList.remove('open');
   });
+});
 
-  // ─── Search ───
-  document.getElementById('search').addEventListener('input', e => {
-    const q = e.target.value.toLowerCase();
-    document.querySelectorAll('.card').forEach(card => {
-      card.style.display = card.textContent.toLowerCase().includes(q) ? '' : 'none';
-    });
-  });
+// Active nav tracking on scroll
+const navItems = document.querySelectorAll('.nav-item[href^="#"]');
+const sections = [];
+navItems.forEach(a => {
+  const id = a.getAttribute('href').slice(1);
+  const el = document.getElementById(id);
+  if (el) sections.push({ el, link: a });
+});
 
-  // ─── Keyboard Shortcuts ───
-  document.addEventListener('keydown', e => {
-    if (e.key === '/' && document.activeElement.tagName !== 'INPUT') {
-      e.preventDefault();
-      document.getElementById('search').focus();
-    }
-    if (e.key === 'Escape') {
-      document.getElementById('search').blur();
-      document.getElementById('search').value = '';
-      document.querySelectorAll('.card').forEach(c => c.style.display = '');
-    }
+function updateActive() {
+  let current = sections[0];
+  for (const s of sections) {
+    if (s.el.getBoundingClientRect().top <= 80) current = s;
+  }
+  navItems.forEach(a => a.classList.remove('active'));
+  if (current) current.link.classList.add('active');
+}
+window.addEventListener('scroll', updateActive, { passive: true });
+updateActive();
+
+// Search
+document.getElementById('search').addEventListener('input', e => {
+  const q = e.target.value.toLowerCase().trim();
+  document.querySelectorAll('.prompt').forEach(p => {
+    if (!q) { p.classList.remove('search-hidden'); return; }
+    p.classList.toggle('search-hidden', !p.textContent.toLowerCase().includes(q));
   });
+});
+
+// Keyboard shortcut
+document.addEventListener('keydown', e => {
+  if (e.key === '/' && document.activeElement.tagName !== 'INPUT') {
+    e.preventDefault();
+    document.getElementById('search').focus();
+  }
+  if (e.key === 'Escape') {
+    const s = document.getElementById('search');
+    s.blur(); s.value = '';
+    document.querySelectorAll('.prompt').forEach(p => p.classList.remove('search-hidden'));
+  }
+});
 </script>
 </body>
 </html>
